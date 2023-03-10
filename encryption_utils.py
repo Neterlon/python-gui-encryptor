@@ -1,5 +1,8 @@
-# Helper functions used by the encryption functions 
-# in the encryption_functions module
+"""
+Helper functions used by the encryption functions in the encryption_functions module
+"""
+
+import math
 
 # Finding the greatest common divisor
 def gcd(a, b):
@@ -39,3 +42,41 @@ def relatively_prime(a, b):
     elif gcd(a,b) == 1: 
         return True
     
+# Determing whether the number is a perfect square
+def is_perfect_square(num):
+    sqrt = math.sqrt(num)
+    return (sqrt - int(sqrt)) == 0
+
+# Create an alphabet matrix
+def matrix_alphabet(alphabet):
+    matrix = {}
+    if is_perfect_square(len(alphabet)):
+        matrix_dimension = int(math.sqrt(len(alphabet)))
+        for i in range(len(alphabet)):
+            matrix[alphabet[i]] = (i // matrix_dimension, i % matrix_dimension)
+        return matrix
+    else:
+        return "Alphabet length is wrong"
+    
+# Insert the last aplhabet character between repeating characters
+def ins_btw_rpt_char(text, alphabet):
+    repeat_indexes = []
+    # Indexes searching that must be followed by an additional letter
+    for i in range(len(text) - 1):
+        if text[i] == text[i + 1]:
+            repeat_indexes.append(i)
+    # Letters adding and dynamically indexes shifting 
+    for i in repeat_indexes:
+        text = text[:i + 1] + alphabet[-1] + text[i + 1:]
+        for j in range(len(repeat_indexes)):
+            repeat_indexes[j] += 1
+    return text
+
+#print(ins_btw_rpt_char("BAA", "FEGRth!"))
+
+# Breake a string into bigrams
+def bigrams(text, alphabet):
+    if len(text) % 2 != 0:
+        text = text + alphabet[-1]
+    bigram_list = [text[i:i + 2] for i in range(0, len(text), 2)]
+    return bigram_list
