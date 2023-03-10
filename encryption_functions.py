@@ -8,11 +8,10 @@ def caesar(in_text, key, encrypt, alphabet):
     if encrypt == "encrypt":
         for s in in_text.upper():
             out_text += alphabet[(alphabet.find(s) + int(key)) % len(alphabet)]
-        return out_text
     elif encrypt == "decrypt":
         for s in in_text.upper():
             out_text += alphabet[(alphabet.find(s) - int(key)) % len(alphabet)]
-        return out_text
+    return out_text
 
 def linear(in_text, key, encrypt, alphabet):
     """Linear cipher"""
@@ -23,11 +22,10 @@ def linear(in_text, key, encrypt, alphabet):
         print(len(alphabet), key)
         for s in in_text.upper():
             out_text += alphabet[(alphabet.find(s) * int(key)) % len(alphabet)]
-        return out_text
     elif encrypt == "decrypt":
         for s in in_text.upper():
             out_text += alphabet[(alphabet.find(s) * encryption_utils.multiplicative_inverse(key, len(alphabet))) % len(alphabet)]
-        return out_text
+    return out_text
 
 def affine(in_text, key, encrypt, alphabet):
     """Affine cipher"""
@@ -39,9 +37,9 @@ def affine(in_text, key, encrypt, alphabet):
         return "You need to enter two keys separated by comma"
     if encrypt == "encrypt":
         for s in in_text.upper():
-            out_text += alphabet[(alphabet.find(s) * int(key[0]) + int(key[1])) % len(alphabet)]
-        return out_text
+            out_text += alphabet[(alphabet.find(s) * key[0] + key[1]) % len(alphabet)]
     elif encrypt == "decrypt":
         for s in in_text.upper():
             out_text += alphabet[(encryption_utils.multiplicative_inverse(key[0], len(alphabet)) * (alphabet.find(s) - key[1])) % len(alphabet)]
-        return out_text
+    return out_text
+    
