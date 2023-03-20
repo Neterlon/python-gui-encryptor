@@ -55,6 +55,12 @@ def affine(in_text, key, encrypt, alphabet):
     
 def playfair(in_text, key, encrypt, alphabet):
     """Playfair cipher"""
+    in_text = in_text.upper()
+    key = key.upper()
+    out_text = ""
+    alphabet_check = encryption_utils.check_against_alphabet(alphabet, key, in_text)
+    if alphabet_check != True:
+        return alphabet_check
     def corners_replacement(): # Function that is used both for encryption and decryption of bigrams located in different rows and columns
         nonlocal out_text
         if matrix_alphabet[bigram[0]][1] > matrix_alphabet[bigram[1]][1]:
@@ -72,14 +78,12 @@ def playfair(in_text, key, encrypt, alphabet):
             new_second_bigram_letter = list(matrix_alphabet.keys())[list(matrix_alphabet.values()).index(new_second_bigram_letter_coord)]
             out_text = out_text + new_first_bigram_letter + new_second_bigram_letter
 
-    out_text = ""
     if not encryption_utils.is_perfect_square(len(alphabet)):
         return "The number of characters in the alphabet must be a perfect square"
     elif not all(char in alphabet for char in key):
         return "The key contains a character that is not presented in the alphabet"
     alphabet_with_key = "".join(dict.fromkeys(key + alphabet)) # Alphabet with key (Duplicate characters are deleted)
     matrix_alphabet = encryption_utils.matrix_alphabet(alphabet_with_key)
-    print(matrix_alphabet)
     matrix_dimension = int(math.sqrt(len(alphabet)))
 
     if encrypt == "encrypt":
@@ -124,5 +128,69 @@ def playfair(in_text, key, encrypt, alphabet):
             # If the letters of bigram are in different columns and rows
             else:
                 corners_replacement()
+    return out_text
+
+def hill(in_text, key, encrypt, alphabet):
+    """Hill cipher (9-characters long key)"""
+    in_text = in_text.upper()
+    key = key.upper()
+    out_text = ""
+    alphabet_check = encryption_utils.check_against_alphabet(alphabet, key, in_text)
+    if alphabet_check != True:
+        return alphabet_check
+    if len(key) != 9:
+        return "Key length should be equal to 9"
+    # Converting the key to a matrix
+    key_matrix = [[0 for j in range(3)] for i in range(3)] # Initialization of the matrix
+    for i in range(9):
+        key_matrix[i//3][i%3] = key[i]
+    # Converting key characters in the matrix to numeric representations
+    key_matrix = encryption_utils.matrix_characters_to_numbers(key_matrix, alphabet)
+    # Check whether the key can be used for encryption
+    if encryption_utils.matrix_det_3x3(key_matrix) == 0:
+        return "This key cannot be used. Determinant of this key is equal to 0"
+    elif encryption_utils.gcd(encryption_utils.matrix_det_3x3(key_matrix), len(alphabet)) != 1:
+        return "GCD of the key determinant and alphabet length should have no common factors (except 1)."
+    # Split the input text by 3 characters
+    if len(in_text) % 3 != 0:
+        return "The number of characters in the input text must be divisible by 3 without a remainder"
+    splitted_text = [list(in_text[i:i+3]) for i in range(0, len(in_text), 3)]
+    # Converting text characters in the matrix to numeric representations
+    splitted_text = encryption_utils.matrix_characters_to_numbers(splitted_text, alphabet)
+
+    if encrypt == "encrypt":
+        encrypted = []
+        # Multiply the set of character numbers by the character numbers of the key
+        for char_set in splitted_text:
+            encrypted.append(encryption_utils.matrix_multiplication([char_set], key_matrix))
+        # Apply the modulus to each number of the matrix
+        for char_set in range (len(encrypted)):
+            encrypted[char_set] = encryption_utils.matrix_elements_modules(encrypted[char_set], len(alphabet))
+        # Unpack the sets of numbers
+        encrypted = [char_set[0] for char_set in encrypted]
+        # Converting numbers in the matrix to its character representations
+        encrypted = encryption_utils.matrix_numbers_to_characters(encrypted, alphabet)
+        # Encryption Result
+        for char_sets in encrypted:
+            for char_set in char_sets:
+                out_text += char_set
+    elif encrypt == "decrypt":
+        decrypted = []
+        # Invert the key matrix
+        key_matrix = encryption_utils.matrix_mod_inverse_3x3(key_matrix, len(alphabet))
+        # Multiply the set of character numbers by the character numbers of the key
+        for char_set in splitted_text:
+            decrypted.append(encryption_utils.matrix_multiplication([char_set], key_matrix))
+        # Apply the modulus to each number of the matrix
+        for char_set in range (len(decrypted)):
+            decrypted[char_set] = encryption_utils.matrix_elements_modules(decrypted[char_set], len(alphabet))
+        # Unpack the sets of numbers
+        decrypted = [char_set[0] for char_set in decrypted]
+        # Converting numbers in the matrix to its character representations
+        decrypted = encryption_utils.matrix_numbers_to_characters(decrypted, alphabet)
+        # Encryption Result
+        for char_sets in decrypted:
+            for char_set in char_sets:
+                out_text += char_set
     return out_text
 
