@@ -165,8 +165,20 @@ def matrix_characters_to_numbers(matrix, alphabet):
             matrix[i][j] = alphabet.index(matrix[i][j])
     return matrix
 
+# Convert numbers in matrix to its character representations in alphabet
 def matrix_numbers_to_characters(matrix, alphabet):
     for i in range(len(matrix)):
         for j in range(len(matrix[0])):
             matrix[i][j] = alphabet[matrix[i][j]]
     return matrix
+
+# Convert characters in list to its numeric representations based on alphabet
+def list_characters_to_numbers(lst, alphabet):
+    for i in range(len(lst)):
+        lst[i] = alphabet.index(lst[i])
+    return lst
+# Convert numbers in list to its character representations based on alphabet
+def list_numbers_to_characters(lst, alphabet):
+    for i in range(len(lst)):
+        lst[i] = alphabet[lst[i]]
+    return lst

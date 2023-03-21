@@ -194,3 +194,36 @@ def hill(in_text, key, encrypt, alphabet):
                 out_text += char_set
     return out_text
 
+def vigenere(in_text, key, encrypt, alphabet):
+    """Vigenere cipher"""
+    in_text = in_text.upper()
+    key = key.upper()
+    enc_data = []
+    out_text = ""
+    alphabet_check = encryption_utils.check_against_alphabet(alphabet, key, in_text)
+    if alphabet_check != True:
+        return alphabet_check
+    if len(key) > len(in_text):
+        return "The length of the key cannot be less than the length of the input text"
+    # Convert input text to list
+    in_text = list(in_text)
+    # Convert key to list 
+    key = list(key)
+    key_list = []
+    key_len = len(key)
+    for i in range(len(in_text)):
+        key_list.append(key[i % key_len])
+    # Convert characters in lists to its numeric representations based on alphabet
+    in_text = encryption_utils.list_characters_to_numbers(in_text, alphabet)
+    key_list = encryption_utils.list_characters_to_numbers(key_list, alphabet)
+
+    if encrypt == "encrypt":
+        for i in range(len(in_text)):
+            enc_data.append((in_text[i] + key_list[i]) % len(alphabet))
+    elif encrypt == "decrypt":
+        for i in range(len(in_text)):
+            enc_data.append((in_text[i] - key_list[i]) % len(alphabet))
+    out_text = encryption_utils.list_numbers_to_characters(enc_data, alphabet)
+    out_text = ''.join(out_text)
+    return out_text
+
