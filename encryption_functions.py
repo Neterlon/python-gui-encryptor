@@ -227,3 +227,45 @@ def vigenere(in_text, key, encrypt, alphabet):
     out_text = ''.join(out_text)
     return out_text
 
+def single_permutation(in_text, key, encrypt, alphabet = None):
+    """Single permutation cipher"""
+    out_text = len(in_text) * "-"
+    key = key.split(",")
+    key = [int(i) for i in key]
+    if len(in_text) != len(key):
+        return "The length of the input text and the length of the key must be the same"
+    elif all([isinstance(i, int) for i in key]) == False:
+        return "The key must consist of numbers separated by commas"
+    if encrypt == "encrypt":
+        for i in range(len(in_text)):
+            out_text = out_text[:i] + in_text[key[i] - 1] + out_text[i + 1:]
+    elif encrypt == "decrypt":
+        for i in range(len(in_text)):
+            out_text = out_text[:key[i] - 1] + in_text[i] + out_text[key[i]:]
+    return out_text
+
+def block_permutation(in_text, key, encrypt, alphabet = None):
+    """Block permutatuon cipher"""
+    out_text = ""
+    key = key.split(",")
+    key = [int(i) for i in key]
+    if len(in_text) % len(key) != 0:
+        return "the length of the key must be a multiple of the length of the input text"
+    elif all([isinstance(i, int) for i in key]) == False:
+        return "The key must consist of numbers separated by commas"
+    if encrypt == "encrypt":
+        for i in range(0, len(in_text), len(key)):
+            chunk = in_text[i:i + len(key)]
+            changed_chunk = len(chunk) * "-"
+            for j in range(len(chunk)):
+                changed_chunk = changed_chunk[:j] + chunk[key[j] - 1] + changed_chunk[j + 1:]
+            out_text += changed_chunk
+    elif encrypt == "decrypt":
+        for i in range(0, len(in_text), len(key)):
+            chunk = in_text[i:i + len(key)]
+            changed_chunk = len(chunk) * "-"
+            for j in range(len(chunk)):
+                changed_chunk = changed_chunk[:key[j] - 1] + chunk[j] + changed_chunk[key[j]:]
+            out_text += changed_chunk
+    return out_text
+
