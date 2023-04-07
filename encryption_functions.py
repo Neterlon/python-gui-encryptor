@@ -250,7 +250,7 @@ def block_permutation(in_text, key, encrypt, alphabet = None):
     key = key.split(",")
     key = [int(i) for i in key]
     if len(in_text) % len(key) != 0:
-        return "the length of the key must be a multiple of the length of the input text"
+        return "The length of the key must be a multiple of the length of the input text"
     elif all([isinstance(i, int) for i in key]) == False:
         return "The key must consist of numbers separated by commas"
     if encrypt == "encrypt":
@@ -267,5 +267,40 @@ def block_permutation(in_text, key, encrypt, alphabet = None):
             for j in range(len(chunk)):
                 changed_chunk = changed_chunk[:key[j] - 1] + chunk[j] + changed_chunk[key[j]:]
             out_text += changed_chunk
+    return out_text
+
+def columnar_transposition(in_text, key, encrypt, alphabet):
+    """Columnar transposition cipher"""
+    out_text = ""
+    if len(set(key)) != len(key):
+        return "Characters in the key must not be repeated"
+    elif len(in_text) % len(key) != 0:
+        return "The length of the key must be a multiple of the length of the input text"
+    # Converting a key to a list showing the order in which letters appear
+    key = list(key.upper())
+    key = encryption_utils.list_characters_to_numbers(key, alphabet)
+    key = encryption_utils.increasing_numbers_order(key)
+    if encrypt == "encrypt":
+        # Conversion of input text into a matrix
+        in_text = [list(in_text[i:i + len(key)]) for i in range(0, len(in_text), len(key))]
+        # Encryption
+        temp_key = key.copy()
+        for i in range(len(key)):
+            min_key_value = min(temp_key)
+            column = key.index(min_key_value)
+            temp_key.remove(min_key_value)
+            for j in range(len(in_text)):
+                out_text += in_text[j][column]
+    elif encrypt == "decrypt":
+        rows_number = len(in_text) // len(key)
+        # Initialization of the matrix for decryption
+        decrypted_matrix = [len(key) * [0] for i in range(rows_number)]
+        # Decryption
+        for i in range(len(in_text)):
+            column = key.index(i // rows_number)
+            decrypted_matrix[i % rows_number][column] = in_text[i]
+        for i in decrypted_matrix:
+            for j in i:
+                out_text += j
     return out_text
 
