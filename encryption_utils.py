@@ -182,3 +182,14 @@ def list_numbers_to_characters(lst, alphabet):
     for i in range(len(lst)):
         lst[i] = alphabet[lst[i]]
     return lst
+
+# Transform the list so that it displays the order of increasing numbers
+def increasing_numbers_order(lst):
+    temp_list = lst.copy()
+    converted_list = [None for i in range(len(lst))]
+    for i in range(len(lst)):
+        min_number = min(temp_list)
+        min_number_index = lst.index(min_number)
+        converted_list[min_number_index] = i
+        temp_list.remove(min_number)
+    return converted_list
