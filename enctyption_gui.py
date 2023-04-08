@@ -105,7 +105,7 @@ class EncGui:
         self.in_text = in_text
 
     # Create a box with information about encryption key
-    def create_key_textbox(self, parent_container, main_window, textbox_size=(70,1)):
+    def create_key_textbox(self, parent_container, main_window, textbox_size=(70,4)):
         keytext_frame = tk.Frame(parent_container, bg=parent_container['bg'])
         keytext_frame.pack(side=tk.TOP, 
                              anchor=tk.W,
