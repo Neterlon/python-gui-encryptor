@@ -304,3 +304,70 @@ def columnar_transposition(in_text, key, encrypt, alphabet):
                 out_text += j
     return out_text
 
+def double_transposition(in_text, key, encrypt, alphabet):
+    """Double transposition cipher"""
+    out_text = ""
+    key = key.upper()
+    key = key.split("\n")
+    # Checking the correctness of keys
+    if len(key) != 2 :
+        return "Write the two keys on two different lines.\nThe first key is used for columns transposition, and the second one is used for rows transposition"
+    elif len(in_text) % len(key[0]) != 0:
+        return "The length of the first key must be a multiple of the length of the input text"
+    elif (len(set(key[0])) != len(key[0])) or (len(set(key[1])) != len(key[1])):
+        return "Characters in the keys must not be repeated"
+    elif len(in_text) % len(key[1]) != 0:
+        return "The length of the second key must be a multiple of the length of the input text"
+    elif len(key[0]) * len(key[1]) != len(in_text):
+        return "The product of the length of the two keys must be equal to the length of the input text"
+    # Converting the keys to lists showing the order in which letters appear
+    key1 = encryption_utils.list_characters_to_numbers(list(key[0]), alphabet)
+    key1 = encryption_utils.increasing_numbers_order(key1)
+    key2 = encryption_utils.list_characters_to_numbers(list(key[1]), alphabet)
+    key2 = encryption_utils.increasing_numbers_order(key2)
+    if encrypt == "encrypt":
+        # Conversion of the input text into a matrix
+        in_text = [list(in_text[i:i + len(key1)]) for i in range(0, len(in_text), len(key1))]
+        # Encryption (columns transposition)
+        columns_transposed_text = ""
+        temp_key = key1.copy()
+        for i in range(len(key1)):
+            min_key_value = min(temp_key)
+            column = key1.index(min_key_value)
+            temp_key.remove(min_key_value)
+            for j in range(len(in_text)):
+                columns_transposed_text += in_text[j][column]
+        # Conversion of changed text into a matrix
+        columns_transposed_text = [list(columns_transposed_text[i:i + len(key1)]) for i in range(0, len(columns_transposed_text), len(key1))]
+        # Encryption (rows transposition)
+        for i in range(len(columns_transposed_text)):
+            temp_key = key2.copy()
+            for j in range(len(key2)):
+                min_key_value = min(temp_key)
+                row = key2.index(min_key_value)
+                temp_key.remove(min_key_value)
+                out_text += columns_transposed_text[i][row]
+    elif encrypt == "decrypt":
+        rows_number = len(in_text) // len(key1)
+        columns_number = len(in_text) // rows_number
+        # Initialization of the matrix for decryption
+        decrypted_matrix = [len(key1) * [0] for i in range(rows_number)]
+        # Decryption (rows transposition)
+        rows_transposed_text = ""
+        for i in range(len(in_text)):
+            column = i // rows_number
+            row = key2.index(i % rows_number)
+            decrypted_matrix[row][column] = in_text[i]
+        for i in range(len(decrypted_matrix[0])):
+            for j in range(len(decrypted_matrix)):
+                rows_transposed_text += decrypted_matrix[j][i]
+        # Decryption (columns transposition)
+        for i in range(len(rows_transposed_text)):
+            column = key1.index(i // rows_number)
+            decrypted_matrix[i % rows_number][column] = rows_transposed_text[i]
+        for i in decrypted_matrix:
+            for j in i:
+                out_text += j
+    return out_text
+
+
