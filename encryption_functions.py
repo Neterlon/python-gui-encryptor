@@ -370,4 +370,82 @@ def double_transposition(in_text, key, encrypt, alphabet):
                 out_text += j
     return out_text
 
+def cardan_grille(in_text, key, encrypt, alphabet = None):
+    """Cardan grille cipher (square)"""
+    out_text = ""
+    key_matrix = [list(i) for i in key.split("\n")]
+    key_matrix = [[int(j) for j in i] for i in key_matrix]
+    key_matrix_dimension = len(key_matrix)
+    key_matrix_size = key_matrix_dimension * key_matrix_dimension
+    grille_pierces = key.count("1")
+    # Checking the correctness of the key
+    key_error = "The key can only be a square matrix consisting of 0 and 1 (1 means a grille pierce).\n You can only choose a matrix of such a dimension that the total number of matrix elements can be divided by 4 without a remainder"
+    pierce_coincidence_error = "When the grille is turned over, the pierces coincide. Place the pierces in a different order"
+    if all([all([True if j==0 or j==1 else False for j in i]) for i in key_matrix]) == False:
+        return key_error
+    elif all([len(row) == len(key_matrix) for row in key_matrix]) == False:
+        return key_error
+    elif len(in_text) != key_matrix_size:
+        return "The number of characters of the initial text must be equal to the number of elements of the key matrix"
+    elif len(key_matrix) % 4 != 0:
+        return key_error
+    elif len(key_matrix) < 4:
+        return "The minimum dimension of the matrix is 4"
+    elif key_matrix_size  % grille_pierces != 0:
+        return "The number of grille pierces '1' must be divisible by the total number of elements of the matrix without a remainder" 
+    for i in range(key_matrix_dimension):
+        for j in range(key_matrix_dimension):
+            if key_matrix[i][j] == 1:
+                if key_matrix[i][key_matrix_dimension - 1 - j] == 1:
+                    return pierce_coincidence_error
+    for i in range(key_matrix_dimension):
+        for j in range(key_matrix_dimension):
+            if key_matrix[i][j] == 1:
+                if key_matrix[key_matrix_dimension - 1 - i][key_matrix_dimension - 1 - j]:
+                    return pierce_coincidence_error
+    for i in range(key_matrix_dimension):
+        for j in range(key_matrix_dimension):
+            if key_matrix[i][j] == 1:
+                if key_matrix[key_matrix_dimension - 1 - i][j] == 1:
+                    return pierce_coincidence_error
+                
+    if encrypt == "encrypt" or encrypt == "decrypt":
+        character_counter = 0
+        result_matrix = [key_matrix_dimension * [0] for i in range(key_matrix_dimension)]
+        def write_iteration_to_encrypted_matrix():
+            nonlocal character_counter
+            for i in range(key_matrix_dimension):
+                for j in range(key_matrix_dimension):
+                    if buff_key_matrix[i][j] == 1:
+                        result_matrix[i][j] = in_text[character_counter]
+                        character_counter += 1
+        # Initial grille
+        buff_key_matrix = key_matrix.copy()
+        write_iteration_to_encrypted_matrix()
+        buff_key_matrix = [key_matrix_dimension * [0] for i in range(key_matrix_dimension)]
+        for i in range(key_matrix_dimension):
+            for j in range(key_matrix_dimension):
+                if key_matrix[i][j] == 1:
+                    buff_key_matrix[i][key_matrix_dimension - 1 - j] = 1
+        # The first turn of the grille
+        write_iteration_to_encrypted_matrix()
+        buff_key_matrix = [key_matrix_dimension * [0] for i in range(key_matrix_dimension)]
+        for i in range(key_matrix_dimension):
+            for j in range(key_matrix_dimension):
+                if key_matrix[i][j] == 1:
+                    buff_key_matrix[key_matrix_dimension - 1 - i][key_matrix_dimension - 1 - j] = 1
+        # The second turn of the grille
+        write_iteration_to_encrypted_matrix()
+        buff_key_matrix = [key_matrix_dimension * [0] for i in range(key_matrix_dimension)]
+        for i in range(key_matrix_dimension):
+            for j in range(key_matrix_dimension):
+                if key_matrix[i][j] == 1:
+                    buff_key_matrix[key_matrix_dimension - 1 - i][j] = 1
+        # The third turn of the grille
+        write_iteration_to_encrypted_matrix()
+        # Result output
+        for i in range(key_matrix_dimension):
+            for j in range(key_matrix_dimension):
+                out_text += result_matrix[j][i]
+    return out_text
 
