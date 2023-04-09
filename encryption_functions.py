@@ -338,7 +338,7 @@ def double_transposition(in_text, key, encrypt, alphabet):
             for j in range(len(in_text)):
                 columns_transposed_text += in_text[j][column]
         # Conversion of changed text into a matrix
-        columns_transposed_text = [list(columns_transposed_text[i:i + len(key1)]) for i in range(0, len(columns_transposed_text), len(key1))]
+        columns_transposed_text = [list(columns_transposed_text[i:i + len(key2)]) for i in range(0, len(columns_transposed_text), len(key2))]
         # Encryption (rows transposition)
         for i in range(len(columns_transposed_text)):
             temp_key = key2.copy()
@@ -387,7 +387,7 @@ def cardan_grille(in_text, key, encrypt, alphabet = None):
         return key_error
     elif len(in_text) != key_matrix_size:
         return "The number of characters of the initial text must be equal to the number of elements of the key matrix"
-    elif len(key_matrix) % 4 != 0:
+    elif key_matrix_size % 4 != 0:
         return key_error
     elif len(key_matrix) < 4:
         return "The minimum dimension of the matrix is 4"
@@ -448,4 +448,3 @@ def cardan_grille(in_text, key, encrypt, alphabet = None):
             for j in range(key_matrix_dimension):
                 out_text += result_matrix[j][i]
     return out_text
-
