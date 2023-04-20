@@ -412,7 +412,7 @@ def cardan_grille(in_text, key, encrypt, alphabet = None):
     if encrypt == "encrypt" or encrypt == "decrypt":
         character_counter = 0
         result_matrix = [key_matrix_dimension * [0] for i in range(key_matrix_dimension)]
-        def write_iteration_to_encrypted_matrix():
+        def write_iteration_to_matrix():
             nonlocal character_counter
             for i in range(key_matrix_dimension):
                 for j in range(key_matrix_dimension):
@@ -421,28 +421,28 @@ def cardan_grille(in_text, key, encrypt, alphabet = None):
                         character_counter += 1
         # Initial grille
         buff_key_matrix = key_matrix.copy()
-        write_iteration_to_encrypted_matrix()
+        write_iteration_to_matrix()
         buff_key_matrix = [key_matrix_dimension * [0] for i in range(key_matrix_dimension)]
         for i in range(key_matrix_dimension):
             for j in range(key_matrix_dimension):
                 if key_matrix[i][j] == 1:
                     buff_key_matrix[i][key_matrix_dimension - 1 - j] = 1
         # The first turn of the grille
-        write_iteration_to_encrypted_matrix()
+        write_iteration_to_matrix()
         buff_key_matrix = [key_matrix_dimension * [0] for i in range(key_matrix_dimension)]
         for i in range(key_matrix_dimension):
             for j in range(key_matrix_dimension):
                 if key_matrix[i][j] == 1:
                     buff_key_matrix[key_matrix_dimension - 1 - i][key_matrix_dimension - 1 - j] = 1
         # The second turn of the grille
-        write_iteration_to_encrypted_matrix()
+        write_iteration_to_matrix()
         buff_key_matrix = [key_matrix_dimension * [0] for i in range(key_matrix_dimension)]
         for i in range(key_matrix_dimension):
             for j in range(key_matrix_dimension):
                 if key_matrix[i][j] == 1:
                     buff_key_matrix[key_matrix_dimension - 1 - i][j] = 1
         # The third turn of the grille
-        write_iteration_to_encrypted_matrix()
+        write_iteration_to_matrix()
         # Result output
         for i in range(key_matrix_dimension):
             for j in range(key_matrix_dimension):
