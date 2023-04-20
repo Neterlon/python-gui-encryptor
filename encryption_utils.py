@@ -193,3 +193,11 @@ def increasing_numbers_order(lst):
         converted_list[min_number_index] = i
         temp_list.remove(min_number)
     return converted_list
+
+# Get the parity bit of the number (Even type of parity)
+def get_even_parity_bit(num):
+    res = 0
+    while num:
+        res ^= num & 1
+        num >>= 1
+    return res
