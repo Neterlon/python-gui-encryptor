@@ -448,3 +448,41 @@ def cardan_grille(in_text, key, encrypt, alphabet = None):
             for j in range(key_matrix_dimension):
                 out_text += result_matrix[j][i]
     return out_text
+
+def xor_cipher(in_text, key, encrypt, alphabet = None):
+    """XOR cipher (Vernam cipher)"""
+    out_text = ""
+    if not all(bit in '01' for bit in key):
+        return "Error: key must consist of only zeros and ones"
+    # Text encoding (encode characters that take up to 16 bits in memory)
+    in_text_encoded = ""
+    for i in range(len(in_text) - 1, -1, -1):
+        if ord(in_text[i]).bit_length() > 16:
+            return(f"You cannot use this character: {in_text[i]}. It takes more than 16 bits of memory.")
+        in_text_encoded = bin(ord(in_text[i]))[2:].zfill(16) + in_text_encoded       
+    if encrypt == "encrypt":
+        # Checking whether the key length is sufficient for encryption
+        if (len(key) <= len(in_text_encoded)):
+            return f"You cannot use this key because it is not large enough. \nThe length of the input text is {len(in_text_encoded)} bits \nThe length of the key is {len(key)} bits" 
+        # Encryption
+        out_text_encoded = int(in_text_encoded, 2) ^ int(key, 2)
+        out_text_encoded = '{0:16b}'.format(out_text_encoded)
+        return out_text_encoded
+    elif encrypt == "decrypt":
+        if not all(bit in '01' for bit in in_text):
+            return "Error: input text for decryption must consist of only zeros and ones"
+        # Decryption
+        out_text_encoded = int(in_text, 2) ^ int(key, 2)
+        out_text_encoded = '{0:16b}'.format(out_text_encoded)
+        # Adding leading zeros
+        if len(out_text_encoded) % 16 != 0:
+            leading_zeros = ""
+            for i in range(16 - (len(out_text_encoded) % 16)):
+                leading_zeros += "0"
+            out_text_encoded = leading_zeros + out_text_encoded
+        # Decoding
+        out_text = ""
+        for i in range(0, len(out_text_encoded), 16):
+            out_text += chr(int(out_text_encoded[i:i+16], 2))
+        return out_text
+
