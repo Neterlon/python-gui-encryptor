@@ -1,8 +1,10 @@
-WINDOW_MIN_WIDTH = 800
-WINDOW_MIN_HEIGHT = 400
+ROOT_WINDOW_HEIGHT = 850
+ROOT_WINDOW_WIDTH = 750
+PRNG_WINDOW_HEIGHT = 880
+PRNG_WINDOW_WIDTH = 1000
 BACKGROUND_COLOR = '#282A3A'
 FONT_COLOR = 'white'
-DEFAULT_FONT = ('Helvetica', 11)
+DEFAULT_FONT = ('Helvetica', 12)
 ALPHABETS = [("ABCDEFGHIJKLMNOPQRSTUVWXYZ .,_", "English"),  # English alphabet
              ("ABCDEFGHIJKLMNOPQRSTUVWXYZ .,_=&!*%@", "English (Perfect Square)"),  # English alphabet (Number of alphabetic characters is a Perfect Square),
              ("ABCDEFGHIJKLMNOPQRSTUVWXYZ ", "English (27 characters)"),  # English alphabet with 27 characters

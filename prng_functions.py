@@ -1,21 +1,23 @@
 import textwrap
 import encryption_utils
 
-def bbs_generator(gen_parameters, iter_num, bin_output = False):
+def bbs_generator(gen_parameters = None, iter_num = None, bin_output = False, get_instructions = False):
     """Blum Blum Shub Generator"""
-    instructions = textwrap.dedent("""
-    You need to enter the parameters required for this generator.
-    Each parameter must be entered on a new line, the name of the parameter and its value must be separated by an equal sign.
-    This generator accepts the following parameters: x, p, q.
-    x - seed (start value), p and q are two prime numbers forming the module m = p * q.
-    The values of x and n must be coprime prime, i.e GCD(x, m) = 1.
-    Example:
-    x = 7
-    p = 11
-    q = 13
-    Note: Binary output represents a sequence of parity bits of each iteration (even type of parity).
-          Decimal output represents a sequence of decimal numbers generated at each iteration.
-    """)
+    if get_instructions == True:
+        instructions = textwrap.dedent("""\
+        You need to enter the parameters required for this generator.
+        Each parameter must be entered on a new line, the name of the parameter and its value must be separated by an equal sign.
+        This generator accepts the following parameters: x, p, q.
+        x - seed (start value), p and q are two prime numbers forming the module m = p * q.
+        The values of x and n must be coprime prime, i.e GCD(x, m) = 1.
+        Example:
+        x = 7
+        p = 11
+        q = 13
+        Note: Binary output represents a sequence of parity bits of each iteration (even type of parity).
+        Decimal output represents a sequence of decimal numbers generated at each iteration.
+        """)
+        return instructions
     # Conversion of the input parameters of the generator into a dictionary and checking the correctness 
     try:
         gen_parameters = gen_parameters.split("\n")
@@ -48,31 +50,34 @@ def bbs_generator(gen_parameters, iter_num, bin_output = False):
     elif bin_output == True:
         return "".join(str(encryption_utils.get_even_parity_bit(n)) for n in gen_res)
 
-def lcg_generator(gen_parameters, iter_num, bin_output = False):
+def lcg_generator(gen_parameters = None, iter_num = None, bin_output = False, get_instructions = False):
     """Linear congruential generator"""
-    instructions = textwrap.dedent("""
-    You need to enter the parameters required for this generator.
-    Each parameter must be entered on a new line, the name of the parameter and its value must be separated by an equal sign.
-    This generator accepts the following parameters: p, q, x, a, c.
-    p and q are two prime numbers forming the module m = p * q.
-    x - seed (start value), 0 ≤ x < m
-    m - modulus, 0 < m
-    a - multiplier, 0 < a < m
-    c - increment, 0 ≤ c < m
-    Example:
-    x = 73
-    p = 3
-    q = 41
-    a = 5
-    c = 2
-    Note: Binary output represents a sequence of bits generated at each iteration that are concatenated without spaces.
-          Decimal output represents a sequence of decimal numbers generated at each iteration that are separated by spaces.
-    """)
+    if get_instructions == True:
+        instructions = textwrap.dedent("""\
+        You need to enter the parameters required for this generator.
+        Each parameter must be entered on a new line, the name of the parameter and its value must be separated by an equal sign.
+        This generator accepts the following parameters: p, q, x, a, c.
+        p and q are two prime numbers forming the module m = p * q.
+        x - seed (start value), 0 ≤ x < m
+        m - modulus, 0 < m
+        a - multiplier, 0 < a < m
+        c - increment, 0 ≤ c < m
+        Example:
+        x = 73
+        p = 3
+        q = 41
+        a = 5
+        c = 2
+        Note: Binary output represents a sequence of bits generated at each iteration that are concatenated without spaces.
+        Decimal output represents a sequence of decimal numbers generated at each iteration that are separated by spaces.
+        """)
+        return instructions
     # Conversion of the input parameters of the generator into a dictionary and checking the correctness 
     try:
         gen_parameters = gen_parameters.split("\n")
         gen_parameters = [parameter.split("=") for parameter in gen_parameters]
         gen_parameters = {parameter[0]:int(parameter[1]) for parameter in gen_parameters}
+        iter_num = int(iter_num)
     except:
         return "Error: you entered the wrong parameters"
     required_parameters = ["x", "p", "q", "a", "c"]
