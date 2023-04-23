@@ -16,7 +16,7 @@ class WindowInitialization:
                             height=heigth)
         self.window.title(title)
         self.window_icon = tk.PhotoImage(file=win_icon)
-        self.window.iconphoto(True, self.window_icon)
+        self.window.iconphoto(False, self.window_icon)
         # General application style   
         self.window.configure(bg=bg)
         self.window.option_add("*Font", font)
