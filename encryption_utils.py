@@ -201,3 +201,23 @@ def get_even_parity_bit(num):
         res ^= num & 1
         num >>= 1
     return res
+
+# Convert string to bits (сan only convert character back if char_size is more than or equal to the bit length of the corresponding Unicode character)
+def to_bits(in_text, char_size):
+    if char_size < 8:
+        return "The char size cannot be less than 8 bits"
+    result = ''
+    bit_plug = '0' * char_size
+    for c in in_text:
+        bits = bin(ord(c))[2:]
+        bits = bit_plug[len(bits):] + bits
+        result += bits
+    return result
+
+# Convert string to bits (сan only convert character back if char_size is more than or equal to the bit length of the corresponding Unicode character)
+def from_bits(bits, char_size):
+    chars = []
+    for b in range(len(bits) // char_size):
+        byte = bits[b * char_size:(b + 1) * char_size]
+        chars.append(chr(int(''.join([str(bit) for bit in byte]), 2)))
+    return ''.join(chars)
