@@ -15,6 +15,7 @@ Available encryption algorithms:
 * Double transposition
 * Cardan grille (square)
 * XOR (Vernam cipher)
+* Feistel cipher (key - 64 bits, number of rounds - 8)
 
 ## How to use
 Run `main.py`.
