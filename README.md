@@ -10,7 +10,7 @@ Available encryption algorithms:
 * Hill (9-characters long key)
 * Vigenere
 * Single permutation 
-* Block permutatuon
+* Block permutation
 * Columnar transposition 
 * Double transposition
 * Cardan grille (square)
