@@ -486,3 +486,52 @@ def xor_cipher(in_text, key, encrypt, alphabet = None):
             out_text += chr(int(out_text_encoded[i:i+16], 2))
         return out_text
 
+def feistel_cipher(in_text, key, encrypt, alphabet = None):
+    """Feistel cipher (key - 64bits, rounds - 8)"""
+    out_text = ''
+    # Check the correctness of the key
+    if not all(c in '01' for c in key):
+        return "The key can only consist of zeros and ones"
+    elif len(key) != 64:
+        return f"The length of the key must be equal to 64. The length of the entered key is {len(key)} bits"
+    # Creation of round keys
+    round_keys = [key[i * 8: i * 8 + 8] for i in range(8)]
+    # Sorting keys in reverse order for decryption
+    if encrypt == "decrypt":
+        round_keys.reverse()
+    # Convert input text to a sequence of bits
+    if encrypt == "encrypt":
+        in_text_b = encryption_utils.to_bits(in_text, 16)
+    elif encrypt == "decrypt":
+        in_text_b = in_text
+    else:
+        return "Enter regular symbols for encryption or encrypted sequence of bits for decryption"
+    # Expand with leading zeros if necessary
+    in_text_b_len = len(in_text_b)
+    if in_text_b_len % 64 != 0:
+        in_text_b = in_text_b.rjust(in_text_b_len + (64 - in_text_b_len % 64), '0')
+        in_text_b_len = len(in_text_b)
+    # Allocating blocks to perform encryption/decryption on them
+    for block_num in range(in_text_b_len // 64):
+        block = in_text_b[block_num * 64:block_num * 64 + 64]
+        # Rounds according to the Feistel cipher
+        l = block[:32]
+        r = block[32:]
+        for round in range(8):
+            # Buff value of r
+            r_buff = r
+            # f Function (XOR of r and a part of a key that repeats 8 times)
+            f = int(r, 2) ^ int(round_keys[round] * 4, 2)
+            f = '{:b}'.format(f)
+            # XOR l and f, move the result to r
+            r = int(l, 2) ^ int(f, 2)
+            r = '{:b}'.format(r)
+            # Move r to l
+            l = r_buff 
+        # Swapping of l and r
+        l, r = r.rjust(32, "0"), l.rjust(32, "0")
+        if encrypt == "encrypt":
+            out_text += l + r
+        elif encrypt == "decrypt":
+            out_text += encryption_utils.from_bits(l + r, 16)
+    return out_text
