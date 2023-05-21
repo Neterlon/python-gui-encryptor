@@ -218,6 +218,6 @@ def to_bits(in_text, char_size):
 def from_bits(bits, char_size):
     chars = []
     for b in range(len(bits) // char_size):
-        byte = bits[b * char_size:(b + 1) * char_size]
-        chars.append(chr(int(''.join([str(bit) for bit in byte]), 2)))
+        block = bits[b * char_size:(b + 1) * char_size]
+        chars.append(chr(int(block, 2)))
     return ''.join(chars)
